@@ -16,9 +16,9 @@ def plot_training_results(hist):
 
 
 def save_model(model, dir_model, name_model, hist):
-    full_path_model = os.path.join(dir_model, f'{name_model}_finetuned.h5')
+    full_path_model = os.path.join(dir_model, f'model_{name_model}_finetuned.h5')
     model.save(full_path_model)
     hist_df = pd.Dataframe(hist)
-    hist_df.to_csv(os.path.join(dir_model, f'{name_model}_finetuned.csv'))
+    hist_df.to_csv(os.path.join(dir_model, f'hist_{name_model}_finetuned.csv'))
     return  print(f'Your fine-tuned model is saved as: {full_path_model}')
 
