@@ -1,6 +1,14 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
+from tqdm import tqdm
+
+
+def extract_labels(dataset):
+    labels = []
+    for _, label in tqdm(dataset):
+        labels.append(label.numpy())
+    return np.concatenate(labels, axis=0)
 
 def build_training_dataset(dir_data, subset, image_size, batch_size):
   ds = tf.keras.preprocessing.image_dataset_from_directory( #write: expects data in specific format (folder names)
@@ -11,12 +19,16 @@ def build_training_dataset(dir_data, subset, image_size, batch_size):
       seed=123,
       image_size=image_size,
       batch_size=1)
+
+  # Extract labels from the training dataset (useful to created balancing weights)
+  labels = extract_labels(ds)
+
   ds_class_names = tuple(ds.class_names)
   ds_size = ds.cardinality().numpy()
   ds = ds.unbatch().batch(batch_size)
   if subset == "training":
     ds = ds.repeat()
-  return ds, ds_class_names, ds_size
+  return ds, ds_class_names, ds_size, labels
   
 
 def augment_data(do_data_augmentation, preprocessing_model):
